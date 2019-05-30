@@ -128,7 +128,8 @@ DrawFocusRingForCellIfNeeded(NSCell* aCell, NSRect aWithFrame, NSView* aInView)
     // individual button parts together before the focus ring shape is
     // calculated.
     CGContextBeginTransparencyLayerWithRect(cgContext, NSRectToCGRect(aWithFrame), 0);
-    [aCell drawFocusRingMaskWithFrame:aWithFrame inView:aInView];
+    if([aCell respondsToSelector:@selector(drawFocusRingMaskWithFrame:inView:)])
+        [aCell drawFocusRingMaskWithFrame:aWithFrame inView:aInView];
     CGContextEndTransparencyLayer(cgContext);
 
     CGContextRestoreGState(cgContext);
@@ -470,6 +471,8 @@ WindowButtonsSize(nsIFrame* aFrame)
   NSWindow* window = NativeWindowForFrame(aFrame);
   if (!window) {
     // Return fallback values.
+    if (!nsCocoaFeatures::OnLionOrLater())
+      return NSMakeSize(57, 16);
     return NSMakeSize(54, 16);
   }
 
@@ -1114,7 +1117,8 @@ nsNativeThemeCocoa::DrawSearchField(CGContextRef cgContext, const HIRect& inBoxR
 }
 
 static const NSSize kCheckmarkSize = NSMakeSize(11, 11);
-static const NSSize kMenuarrowSize = NSMakeSize(9, 10);
+static const NSSize kMenuarrowSize = nsCocoaFeatures::OnLionOrLater() ?
+                                     NSMakeSize(9, 10) : NSMakeSize(8, 10);
 static const NSSize kMenuScrollArrowSize = NSMakeSize(10, 8);
 static NSString* kCheckmarkImage = @"MenuOnState";
 static NSString* kMenuarrowRightImage = @"MenuSubmenu";
@@ -1142,8 +1146,19 @@ nsNativeThemeCocoa::DrawMenuIcon(CGContextRef cgContext, const CGRect& aRect,
     aRect.origin.y + ceil(paddingY / 2),
     aIconSize.width, aIconSize.height);
 
-  NSString* state = IsDisabled(aFrame, inState) ? @"disabled" :
-    (CheckBooleanAttr(aFrame, nsGkAtoms::menuactive) ? @"pressed" : @"normal");
+  BOOL isDisabled = IsDisabled(aFrame, inState);
+  BOOL isActive = CheckBooleanAttr(aFrame, nsGkAtoms::menuactive);
+
+  // On 10.6 and at least on 10.7.0, Apple doesn’t seem to have implemented all
+  // keys and values used on 10.7.5 and later. We can however draw menu icons
+  // on earlier OS versions by using different keys/values.
+  BOOL otherKeysAndValues = !nsCocoaFeatures::IsAtLeastVersion(10,7,5);
+
+  // 2 states combined with 2 different backgroundTypeKeys on earlier versions.
+  NSString* state = isDisabled ? @"disabled" :
+    (isActive && !otherKeysAndValues) ? @"pressed" : @"normal";
+  NSString* backgroundTypeKey = !otherKeysAndValues ? @"kCUIBackgroundTypeMenu" :
+    !isDisabled && isActive ? @"backgroundTypeDark" : @"backgroundTypeLight";
 
   NSString* imageName = aImageName;
   if (!nsCocoaFeatures::OnElCapitanOrLater()) {
@@ -1151,14 +1166,19 @@ nsNativeThemeCocoa::DrawMenuIcon(CGContextRef cgContext, const CGRect& aRect,
     imageName = [@"image." stringByAppendingString:aImageName];
   }
 
+  NSMutableArray* keys = [NSMutableArray arrayWithObjects:@"backgroundTypeKey",
+    @"imageNameKey", @"state", @"widget", @"is.flipped", nil];
+  NSMutableArray* values = [NSMutableArray arrayWithObjects: backgroundTypeKey,
+    imageName, state, @"image", [NSNumber numberWithBool:YES], nil];
+
+  if (otherKeysAndValues) { // Earlier versions used one more key-value pair.
+    [keys insertObject:@"imageIsGrayscaleKey" atIndex:1];
+    [values insertObject:[NSNumber numberWithBool:YES] atIndex:1];
+  }
+
   RenderWithCoreUI(drawRect, cgContext,
-          [NSDictionary dictionaryWithObjectsAndKeys:
-            @"kCUIBackgroundTypeMenu", @"backgroundTypeKey",
-            imageName, @"imageNameKey",
-            state, @"state",
-            @"image", @"widget",
-            [NSNumber numberWithBool:YES], @"is.flipped",
-            nil]);
+                  [NSDictionary dictionaryWithObjects:values
+                                              forKeys:keys]);
 
 #if DRAW_IN_FRAME_DEBUG
   CGContextSetRGBFillColor(cgContext, 0.0, 0.0, 0.5, 0.25);

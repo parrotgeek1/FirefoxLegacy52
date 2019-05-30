@@ -708,6 +708,14 @@ nsMediaFeatures::features[] = {
     GetSystemMetric
   },
   {
+    &nsGkAtoms::_moz_mac_lion_theme,
+    nsMediaFeature::eMinMaxNotAllowed,
+    nsMediaFeature::eBoolInteger,
+    nsMediaFeature::eNoRequirements,
+    { &nsGkAtoms::mac_lion_theme },
+    GetSystemMetric
+  },
+  {
     &nsGkAtoms::_moz_mac_yosemite_theme,
     nsMediaFeature::eMinMaxNotAllowed,
     nsMediaFeature::eBoolInteger,

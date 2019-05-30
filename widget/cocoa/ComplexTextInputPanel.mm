@@ -32,6 +32,7 @@
 #include <algorithm>
 #include "mozilla/Preferences.h"
 #include "nsChildView.h"
+#include "nsCocoaFeatures.h"
 
 using namespace mozilla;
 

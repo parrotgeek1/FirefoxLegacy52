@@ -1011,7 +1011,7 @@ nsCocoaUtils::GetNSMutableAttributedString(
   }
 
   if (aIsVertical) {
-    [attrStr addAttribute:NSVerticalGlyphFormAttributeName
+    [attrStr addAttribute:@"CTVerticalForms" /*NSVerticalGlyphFormAttributeName*/
                     value:[NSNumber numberWithInt: 1]
                     range:NSMakeRange(0, [attrStr length])];
   }

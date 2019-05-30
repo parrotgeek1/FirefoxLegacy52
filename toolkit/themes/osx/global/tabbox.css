@@ -50,9 +50,11 @@ tab:last-of-type {
   padding-inline-end: 2px;
 }
 
-tab[visuallyselected="true"] {
-  color: #FFF;
-  text-shadow: rgba(0, 0, 0, 0.4) 0 1px;
+@media (-moz-mac-lion-theme) {
+  tab[visuallyselected="true"] {
+    color: #FFF;
+    text-shadow: rgba(0, 0, 0, 0.4) 0 1px;
+  }
 }
 
 .tab-middle {
