@@ -163,6 +163,7 @@
 #ifdef XP_MACOSX
 #include "nsILocalFileMac.h"
 #include "nsCommandLineServiceMac.h"
+#include "nsCocoaFeatures.h"
 #endif
 
 // for X remote support
@@ -4927,6 +4928,29 @@ MultiprocessBlockPolicy() {
       gMultiprocessBlockPolicy = kE10sDisabledForOperatingSystem;
       return gMultiprocessBlockPolicy;
     }
+#endif
+
+  /**
+   * Avoids enabling e10s for OS X 10.6 - 10.8 users (<= Mountain Lion) 
+   */
+#if defined(XP_MACOSX)
+  if (!nsCocoaFeatures::OnMavericksOrLater()) {
+    gMultiprocessBlockPolicy = kE10sDisabledForOperatingSystem;
+    return gMultiprocessBlockPolicy;
+  }
+#endif
+
+#if defined(XP_WIN)
+  /**
+   * We block on Windows XP if layers acceleration is requested. This is due to
+   * bug 1237769 where D3D9 and e10s behave badly together on XP.
+   */
+  bool layersAccelerationRequested = !Preferences::GetBool("layers.acceleration.disabled") ||
+                                      Preferences::GetBool("layers.acceleration.force-enabled");
+
+  if (layersAccelerationRequested && !IsVistaOrLater()) {
+    gMultiprocessBlockPolicy = kE10sDisabledForXPAcceleration;
+    return gMultiprocessBlockPolicy;
   }
 #endif // XP_WIN
 
