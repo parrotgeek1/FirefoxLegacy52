@@ -1906,42 +1906,7 @@ if test "$ac_cv_cpp_dynamic_cast_void_ptr" = yes ; then
    AC_DEFINE(HAVE_CPP_DYNAMIC_CAST_TO_VOID_PTR)
 fi
 
-
-# try harder, when checking for __thread support, see bug 521750 comment #33 and below
-# We pass MOZ_OPTIMIZE_LDFLAGS to the linker because if dead_strip is
-# enabled, the linker in xcode 4.1 will crash. Without this it would crash when
-# linking XUL.
-_SAVE_LDFLAGS=$LDFLAGS
-LDFLAGS="$LDFLAGS $DSO_PIC_CFLAGS $DSO_LDOPTS $MOZ_OPTIMIZE_LDFLAGS"
-AC_CACHE_CHECK(for __thread keyword for TLS variables,
-               ac_cv_thread_keyword,
-               [AC_TRY_LINK([__thread bool tlsIsMainThread = false;],
-                            [return tlsIsMainThread;],
-                            ac_cv_thread_keyword=yes,
-                            ac_cv_thread_keyword=no)])
-LDFLAGS=$_SAVE_LDFLAGS
-# The custom dynamic linker doesn't support TLS variables
 MOZ_TLS=
-if test "$ac_cv_thread_keyword" = yes -a "$MOZ_LINKER" != 1; then
-  # mips builds fail with TLS variables because of a binutils bug.
-  # See bug 528687
-  # OpenBSD doesn't have TLS support, and the test succeeds with clang++
-  case "${target}" in
-    mips*-*)
-      :
-      ;;
-    *-android*|*-linuxandroid*)
-      :
-      ;;
-    *-openbsd*)
-      :
-      ;;
-    *)
-      AC_DEFINE(HAVE_THREAD_TLS_KEYWORD)
-      MOZ_TLS=1
-      ;;
-  esac
-fi
 
 dnl Using the custom linker on ARMv6 requires 16k alignment of ELF segments.
 if test -n "$MOZ_LINKER"; then

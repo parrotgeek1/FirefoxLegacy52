@@ -1485,20 +1485,20 @@ AC_ARG_ENABLE([tls],
 if test "x$enable_tls" = "xno" ; then
   enable_tls="0"
 else
-  enable_tls="1"
+  enable_tls="0"
 fi
 ,
-enable_tls=""
+enable_tls="0"
 )
 if test "x${enable_tls}" = "x" ; then
   if test "x${force_tls}" = "x1" ; then
     AC_MSG_RESULT([Forcing TLS to avoid allocator/threading bootstrap issues])
-    enable_tls="1"
+    enable_tls="0"
   elif test "x${force_tls}" = "x0" ; then
     AC_MSG_RESULT([Forcing no TLS to avoid allocator/threading bootstrap issues])
     enable_tls="0"
   else
-    enable_tls="1"
+    enable_tls="0"
   fi
 fi
 if test "x${enable_tls}" = "x1" ; then
