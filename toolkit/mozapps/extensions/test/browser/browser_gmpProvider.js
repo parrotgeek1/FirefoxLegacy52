@@ -392,8 +392,7 @@ add_task(function* testEmeSupport() {
       }
     } else if (addon.id == GMPScope.WIDEVINE_ID) {
       if (AppConstants.isPlatformAndVersionAtLeast("win", "6") ||
-          AppConstants.platform == "macosx" ||
-          AppConstants.platform == "linux") {
+          AppConstants.isPlatformAndVersionAtLeast("macosx", "10.7")) {
         Assert.ok(item, "Widevine supported, found add-on element.");
       } else {
         Assert.ok(!item,
