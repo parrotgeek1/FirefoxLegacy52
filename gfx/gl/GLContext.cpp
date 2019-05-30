@@ -1025,9 +1025,15 @@ GLContext::InitWithPrefixImpl(const char* prefix, bool trygl)
             mMaxRenderbufferSize   = std::min(mMaxRenderbufferSize,   4096);
             mNeedsTextureSizeChecks = true;
         } else if (mVendor == GLVendor::NVIDIA) {
-            // See bug 879656.  8192 fails, 8191 works.
-            mMaxTextureSize = std::min(mMaxTextureSize, 8191);
-            mMaxRenderbufferSize = std::min(mMaxRenderbufferSize, 8191);
+            if (nsCocoaFeatures::OnMountainLionOrLater()) {
+                // See bug 879656.  8192 fails, 8191 works.
+                mMaxTextureSize = std::min(mMaxTextureSize, 8191);
+                mMaxRenderbufferSize = std::min(mMaxRenderbufferSize, 8191);
+            } else {
+                // See bug 877949.
+                mMaxTextureSize = std::min(mMaxTextureSize, 4096);
+                mMaxRenderbufferSize = std::min(mMaxRenderbufferSize, 4096);
+            }
 
             // Part of the bug 879656, but it also doesn't hurt the 877949
             mNeedsTextureSizeChecks = true;

@@ -249,7 +249,7 @@ ClientTiledPaintedLayer::IsScrollingOnCompositor(const FrameMetrics& aParentMetr
 
 bool
 ClientTiledPaintedLayer::UseProgressiveDraw() {
-  if (!gfxPrefs::ProgressivePaint()) {
+  if (!gfxPlatform::GetPlatform()->UseProgressivePaint()) {
     // pref is disabled, so never do progressive
     return false;
   }

@@ -323,16 +323,12 @@ static bool supports_LCD() {
     AutoCFRelease<CGColorSpaceRef> colorspace(CGColorSpaceCreateDeviceRGB());
     AutoCFRelease<CGContextRef> cgContext(CGBitmapContextCreate(&rgb, 1, 1, 8, 4,
                                                                 colorspace, BITMAP_INFO_RGB));
-    AutoCFRelease<CTFontRef> ctFont(CTFontCreateWithName(CFSTR("Helvetica"), 16, nullptr));
+    CGContextSelectFont(cgContext, "Helvetica", 16, kCGEncodingMacRoman);
     CGContextSetShouldSmoothFonts(cgContext, true);
     CGContextSetShouldAntialias(cgContext, true);
     CGContextSetTextDrawingMode(cgContext, kCGTextFill);
     CGContextSetGrayFillColor(cgContext, 1, 1);
-    CGPoint point = CGPointMake(-1, 0);
-    static const UniChar pipeChar = '|';
-    CGGlyph pipeGlyph;
-    CTFontGetGlyphsForCharacters(ctFont, &pipeChar, &pipeGlyph, 1);
-    CTFontDrawGlyphs(ctFont, &pipeGlyph, &point, 1, cgContext);
+    CGContextShowTextAtPoint(cgContext, -1, 0, "|", 1);
 
     uint32_t r = (rgb >> 16) & 0xFF;
     uint32_t g = (rgb >>  8) & 0xFF;
@@ -847,9 +843,28 @@ SkScalerContext_Mac::SkScalerContext_Mac(SkTypeface_Mac* typeface,
     fFUnitMatrix.preScale(emPerFUnit, -emPerFUnit);
 }
 
+/** This is an implementation of CTFontDrawGlyphs for 10.6; it was introduced in 10.7. */
+static void legacy_CTFontDrawGlyphs(CTFontRef, const CGGlyph glyphs[], const CGPoint points[],
+                                    size_t count, CGContextRef cg) {
+    CGContextShowGlyphsAtPositions(cg, glyphs, points, count);
+}
+
+typedef decltype(legacy_CTFontDrawGlyphs) CTFontDrawGlyphsProc;
+
+static CTFontDrawGlyphsProc* choose_CTFontDrawGlyphs() {
+    if (void* real = dlsym(RTLD_DEFAULT, "CTFontDrawGlyphs")) {
+        return (CTFontDrawGlyphsProc*)real;
+    }
+    return &legacy_CTFontDrawGlyphs;
+}
+
 CGRGBPixel* Offscreen::getCG(const SkScalerContext_Mac& context, const SkGlyph& glyph,
                              CGGlyph glyphID, size_t* rowBytesPtr,
                              bool generateA8FromLCD) {
+    static SkOnce once;
+    static CTFontDrawGlyphsProc* ctFontDrawGlyphs;
+    once([]{ ctFontDrawGlyphs = choose_CTFontDrawGlyphs(); });
+
     if (!fRGBSpace) {
         //It doesn't appear to matter what color space is specified.
         //Regular blends and antialiased text are always (s*a + d*(1-a))
@@ -917,6 +932,13 @@ CGRGBPixel* Offscreen::getCG(const SkScalerContext_Mac& context, const SkGlyph& 
         fDoAA = !doAA;
         fDoLCD = !doLCD;
 
+        if (legacy_CTFontDrawGlyphs == ctFontDrawGlyphs) {
+            // CTFontDrawGlyphs will apply the font, font size, and font matrix to the CGContext.
+            // Our 'fake' one does not, so set up the CGContext here.
+            CGContextSetFont(fCG, context.fCGFont);
+            CGContextSetFontSize(fCG, CTFontGetSize(context.fCTFont));
+        }
+
         CGContextSetTextMatrix(fCG, context.fTransform);
     }
 
@@ -962,7 +984,7 @@ CGRGBPixel* Offscreen::getCG(const SkScalerContext_Mac& context, const SkGlyph& 
     // So always make the font transform identity and place the transform on the context.
     point = CGPointApplyAffineTransform(point, context.fInvTransform);
 
-    CTFontDrawGlyphs(context.fCTFont, &glyphID, &point, 1, fCG);
+    ctFontDrawGlyphs(context.fCTFont, &glyphID, &point, 1, fCG);
 
     SkASSERT(rowBytesPtr);
     *rowBytesPtr = rowBytes;

@@ -273,6 +273,10 @@ public:
     bool AllowOpenGLCanvas();
     virtual void InitializeSkiaCacheLimits();
 
+    /// These should be used instead of directly accessing the preference,
+    /// as different platforms may override the behaviour.
+    virtual bool UseProgressivePaint();
+
     static bool AsyncPanZoomEnabled();
 
     virtual void GetAzureBackendInfo(mozilla::widget::InfoObject &aObj) {
