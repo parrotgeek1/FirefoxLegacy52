@@ -1,0 +1,9 @@
+brew unlink binutils
+./mach bootstrap
+./mach build
+./getcxx.sh
+./mach package
+open the dmg in obj
+copy app somewhere
+./patchcxx.sh Nightly.app
+./shim.sh Nightly.app

@@ -122,3 +122,4 @@ lextab.py
 
 # tup database
 /.tup
+*.dylib
