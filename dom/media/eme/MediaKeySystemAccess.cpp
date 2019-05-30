@@ -16,6 +16,9 @@
 #include "mozilla/WindowsVersion.h"
 #include "WMFDecoderModule.h"
 #endif
+#ifdef XP_MACOSX
+#include "nsCocoaFeatures.h"
+#endif
 #include "nsContentCID.h"
 #include "nsServiceManagerUtils.h"
 #include "mozIGeckoMediaPluginService.h"
@@ -147,6 +150,12 @@ MediaKeySystemAccess::GetKeySystemStatus(const nsAString& aKeySystem,
         return MediaKeySystemStatus::Cdm_not_supported;
       }
 #endif
+#ifdef XP_MACOSX
+      if (!nsCocoaFeatures::OnLionOrLater()) {
+        aOutMessage = NS_LITERAL_CSTRING("Minimum MacOSX version (10.7) not met for Adobe EME");
+        return MediaKeySystemStatus::Cdm_not_supported;
+      }
+#endif
       return EnsureCDMInstalled(aKeySystem, aOutMessage);
     }
   }
@@ -157,6 +166,12 @@ MediaKeySystemAccess::GetKeySystemStatus(const nsAString& aKeySystem,
       // Win Vista and later only.
       if (!IsVistaOrLater()) {
         aOutMessage = NS_LITERAL_CSTRING("Minimum Windows version (Vista) not met for Widevine EME");
+        return MediaKeySystemStatus::Cdm_not_supported;
+      }
+#endif
+#ifdef XP_MACOSX
+      if (!nsCocoaFeatures::OnLionOrLater()) {
+        aOutMessage = NS_LITERAL_CSTRING("Minimum MacOSX version (10.7) not met for Widevine EME");
         return MediaKeySystemStatus::Cdm_not_supported;
       }
 #endif

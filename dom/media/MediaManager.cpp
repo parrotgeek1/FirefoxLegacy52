@@ -77,6 +77,9 @@
 #include "MediaPermissionGonk.h"
 #endif
 
+#if defined(XP_MACOSX)
+#include "nsCocoaFeatures.h"
+#endif
 #if defined (XP_WIN)
 #include "mozilla/WindowsVersion.h"
 #include <winsock2.h>
@@ -2131,17 +2134,24 @@ if (privileged) {
       case MediaSourceEnum::Window:
         // Deny screensharing request if support is disabled, or
         // the requesting document is not from a host on the whitelist, or
-        // we're on WinXP until proved that it works
+        // we're on Mac OSX 10.6 and WinXP until proved that they work
         if (!Preferences::GetBool(((videoType == MediaSourceEnum::Browser)?
                                    "media.getusermedia.browser.enabled" :
                                    "media.getusermedia.screensharing.enabled"),
                                   false) ||
-#if defined(XP_WIN)
+#if defined(XP_MACOSX) || defined(XP_WIN)
             (
-              // Allow tab sharing for all platforms including XP
+              // Allow tab sharing for all platforms including XP and OSX 10.6
               (videoType != MediaSourceEnum::Browser) &&
               !Preferences::GetBool("media.getusermedia.screensharing.allow_on_old_platforms",
-                                    false) && !IsVistaOrLater()) ||
+                                    false) &&
+#if defined(XP_MACOSX)
+              !nsCocoaFeatures::OnLionOrLater()
+#endif
+#if defined (XP_WIN)
+              !IsVistaOrLater()
+#endif
+              ) ||
 #endif
             (!privileged && !HostIsHttps(*docURI))) {
           RefPtr<MediaStreamError> error =
