@@ -1,4 +1,2 @@
 fix webrtc
-fat binary
 remove need for strnlen shim
-fix scrollbars
