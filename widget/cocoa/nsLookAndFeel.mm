@@ -513,6 +513,9 @@ bool nsLookAndFeel::UseOverlayScrollbars()
 
 bool nsLookAndFeel::SystemWantsOverlayScrollbars()
 {
+  if (!nsCocoaFeatures::OnLionOrLater()) {
+    return true;
+  }
   return ([NSScroller respondsToSelector:@selector(preferredScrollerStyle)] &&
           [NSScroller preferredScrollerStyle] == mozNSScrollerStyleOverlay);
 }
