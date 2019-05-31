@@ -1,7 +1,7 @@
 #!/bin/bash -e 
 
 
-gcc -fPIC -O3 -Wall -Wextra -Werror -Wno-unused-parameter -arch x86_64 -arch i386 -dynamiclib -mmacosx-version-min=10.6 -Wl,-reexport_library,/usr/lib/libSystem.B.dylib -current_version 1 -compatibility_version 1 -o libFxShim.dylib  shim.c
+gcc -fPIC -O3 -Wall -Wextra -Werror -Wno-unused-parameter -arch i386 -dynamiclib -mmacosx-version-min=10.6 -Wl,-reexport_library,/usr/lib/libSystem.B.dylib -current_version 1 -compatibility_version 1 -o libFxShim.dylib  shim.c
 
 mv libFxShim*.dylib "$1"/Contents/MacOS/
 
