@@ -7,10 +7,10 @@
 
 #import <Foundation/Foundation.h>
 #if !__LP64__
-	#import <QuickTime/QuickTime.h>
+	#import "../QuickTime/QuickTime.h"
 #endif
 #import <CoreAudio/CoreAudioTypes.h>	// SMPTETime
-#import <QTKit/QTKitDefines.h>
+#import "QTKitDefines.h"
 
 enum {
     kQTTimeIsIndefinite = 1 << 0

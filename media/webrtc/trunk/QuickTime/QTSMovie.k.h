@@ -16,13 +16,13 @@
 #ifndef __QTSMOVIE_K__
 #define __QTSMOVIE_K__
 
-#include <QuickTime/QTSMovie.h>
+#include "QTSMovie.h"
 /*
 	Example usage:
 
 		#define QTSMEDIA_BASENAME()	Fred
 		#define QTSMEDIA_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QTSMovie.k.h>
+		#include "QTSMovie.k.h"
 
 	To specify that your component implementation does not use globals, do not #define QTSMEDIA_GLOBALS
 */

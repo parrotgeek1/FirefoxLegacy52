@@ -16,13 +16,13 @@
 #ifndef __IMAGECODEC_K__
 #define __IMAGECODEC_K__
 
-#include <QuickTime/ImageCodec.h>
+#include "ImageCodec.h"
 /*
 	Example usage:
 
 		#define IMAGECODEC_BASENAME()	Fred
 		#define IMAGECODEC_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/ImageCodec.k.h>
+		#include "ImageCodec.k.h"
 
 	To specify that your component implementation does not use globals, do not #define IMAGECODEC_GLOBALS
 */
@@ -256,7 +256,7 @@
 
 		#define QTPHOTO_BASENAME()	Fred
 		#define QTPHOTO_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/ImageCodec.k.h>
+		#include "ImageCodec.k.h"
 
 	To specify that your component implementation does not use globals, do not #define QTPHOTO_GLOBALS
 */
@@ -295,7 +295,7 @@
 
 		#define IMAGECODEC_BASENAME()	Fred
 		#define IMAGECODEC_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/ImageCodec.k.h>
+		#include "ImageCodec.k.h"
 
 	To specify that your component implementation does not use globals, do not #define IMAGECODEC_GLOBALS
 */
@@ -349,7 +349,7 @@
 
 		#define CURVE_BASENAME()	Fred
 		#define CURVE_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/ImageCodec.k.h>
+		#include "ImageCodec.k.h"
 
 	To specify that your component implementation does not use globals, do not #define CURVE_GLOBALS
 */

@@ -21,11 +21,11 @@
 #endif
 
 #ifndef __MOVIES__
-#include <QuickTime/Movies.h>
+#include "Movies.h"
 #endif
 
 #ifndef __QUICKTIMECOMPONENTS__
-#include <QuickTime/QuickTimeComponents.h>
+#include "QuickTimeComponents.h"
 #endif
 
 

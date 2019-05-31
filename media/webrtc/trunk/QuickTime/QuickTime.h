@@ -25,63 +25,63 @@
 /* QuickTime is not available to 64-bit clients */
 
 #ifndef __QTML__
-#include <QuickTime/QTML.h>
+#include "QTML.h"
 #endif
 
 #ifndef __MEDIAHANDLERS__
-#include <QuickTime/MediaHandlers.h>
+#include "MediaHandlers.h"
 #endif
 
 #ifndef __MOVIES__
-#include <QuickTime/Movies.h>
+#include "Movies.h"
 #endif
 
 #ifndef __MOVIESFORMAT__
-#include <QuickTime/MoviesFormat.h>
+#include "MoviesFormat.h"
 #endif
 
 #ifndef __QUICKTIMEVR__
-#include <QuickTime/QuickTimeVR.h>
+#include "QuickTimeVR.h"
 #endif
 
 #ifndef __QUICKTIMEVRFORMAT__
-#include <QuickTime/QuickTimeVRFormat.h>
+#include "QuickTimeVRFormat.h"
 #endif
 
 #ifndef __IMAGECOMPRESSION__
-#include <QuickTime/ImageCompression.h>
+#include "ImageCompression.h"
 #endif
 
 #ifndef __IMAGECODEC__
-#include <QuickTime/ImageCodec.h>
+#include "ImageCodec.h"
 #endif
 
 #ifndef __QUICKTIMEMUSIC__
-#include <QuickTime/QuickTimeMusic.h>
+#include "QuickTimeMusic.h"
 #endif
 
 #ifndef __QUICKTIMECOMPONENTS__
-#include <QuickTime/QuickTimeComponents.h>
+#include "QuickTimeComponents.h"
 #endif
 
 #ifndef __QUICKTIMESTREAMING__
-#include <QuickTime/QuickTimeStreaming.h>
+#include "QuickTimeStreaming.h"
 #endif
 
 #ifndef __QTSMOVIE__
-#include <QuickTime/QTSMovie.h>
+#include "QTSMovie.h"
 #endif
 
 #ifndef __QTSTREAMINGCOMPONENTS__
-#include <QuickTime/QTStreamingComponents.h>
+#include "QTStreamingComponents.h"
 #endif
 
 #ifndef __QUICKTIMEERRORS__
-#include <QuickTime/QuickTimeErrors.h>
+#include "QuickTimeErrors.h"
 #endif
 
 #ifndef __HIMOVIEVIEW__
-#include <QuickTime/HIMovieView.h>
+#include "HIMovieView.h"
 #endif
 
 

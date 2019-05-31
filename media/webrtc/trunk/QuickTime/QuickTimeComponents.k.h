@@ -16,13 +16,13 @@
 #ifndef __QUICKTIMECOMPONENTS_K__
 #define __QUICKTIMECOMPONENTS_K__
 
-#include <QuickTime/QuickTimeComponents.h>
+#include "QuickTimeComponents.h"
 /*
 	Example usage:
 
 		#define CLOCK_BASENAME()	Fred
 		#define CLOCK_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define CLOCK_GLOBALS
 */
@@ -85,7 +85,7 @@
 
 		#define SC_BASENAME()	Fred
 		#define SC_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define SC_GLOBALS
 */
@@ -113,7 +113,7 @@
 
 		#define SC_BASENAME()	Fred
 		#define SC_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define SC_GLOBALS
 */
@@ -230,7 +230,7 @@
 
 		#define TWEENER_BASENAME()	Fred
 		#define TWEENER_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define TWEENER_GLOBALS
 */
@@ -266,7 +266,7 @@
 
 		#define TC_BASENAME()	Fred
 		#define TC_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define TC_GLOBALS
 */
@@ -350,7 +350,7 @@
 
 		#define MOVIEIMPORT_BASENAME()	Fred
 		#define MOVIEIMPORT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define MOVIEIMPORT_GLOBALS
 */
@@ -479,7 +479,7 @@
 
 		#define MOVIEEXPORT_BASENAME()	Fred
 		#define MOVIEEXPORT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define MOVIEEXPORT_GLOBALS
 */
@@ -557,7 +557,7 @@
 
 		#define TEXTEXPORT_BASENAME()	Fred
 		#define TEXTEXPORT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define TEXTEXPORT_GLOBALS
 */
@@ -589,7 +589,7 @@
 
 		#define MIDIIMPORT_BASENAME()	Fred
 		#define MIDIIMPORT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define MIDIIMPORT_GLOBALS
 */
@@ -615,7 +615,7 @@
 
 		#define MOVIEEXPORT_BASENAME()	Fred
 		#define MOVIEEXPORT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define MOVIEEXPORT_GLOBALS
 */
@@ -641,7 +641,7 @@
 
 		#define GRAPHICSIMAGEIMPORT_BASENAME()	Fred
 		#define GRAPHICSIMAGEIMPORT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define GRAPHICSIMAGEIMPORT_GLOBALS
 */
@@ -683,7 +683,7 @@ enum {
 
 		#define PREVIEW_BASENAME()	Fred
 		#define PREVIEW_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define PREVIEW_GLOBALS
 */
@@ -722,7 +722,7 @@ enum {
 
 		#define DATACODEC_BASENAME()	Fred
 		#define DATACODEC_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define DATACODEC_GLOBALS
 */
@@ -770,7 +770,7 @@ enum {
 
 		#define DATAH_BASENAME()	Fred
 		#define DATAH_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define DATAH_GLOBALS
 */
@@ -940,7 +940,7 @@ enum {
 
 		#define VD_BASENAME()	Fred
 		#define VD_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define VD_GLOBALS
 */
@@ -1323,7 +1323,7 @@ enum {
 
 		#define VDIIDC_BASENAME()	Fred
 		#define VDIIDC_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define VDIIDC_GLOBALS
 */
@@ -1368,7 +1368,7 @@ enum {
 
 		#define XMLPARSE_BASENAME()	Fred
 		#define XMLPARSE_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define XMLPARSE_GLOBALS
 */
@@ -1458,7 +1458,7 @@ enum {
 
 		#define SG_BASENAME()	Fred
 		#define SG_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define SG_GLOBALS
 */
@@ -1986,7 +1986,7 @@ enum {
 
 		#define QTVIDEOOUTPUT_BASENAME()	Fred
 		#define QTVIDEOOUTPUT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeComponents.k.h>
+		#include "QuickTimeComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define QTVIDEOOUTPUT_GLOBALS
 */

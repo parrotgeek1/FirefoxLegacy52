@@ -20,11 +20,11 @@
 
 #import <Foundation/Foundation.h>
 #if !__LP64__
-	#import <QuickTime/QuickTime.h>
+	#import "../QuickTime/QuickTime.h"
 #endif
-#import <QTKit/QTKitDefines.h>
-#import <QTKit/QTTime.h>
-#import <QTKit/QTTimeRange.h>
+#import "QTKitDefines.h"
+#import "QTTime.h"
+#import "QTTimeRange.h"
 
 @class QTMovie;
 @class QTMedia;

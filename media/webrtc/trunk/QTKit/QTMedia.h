@@ -19,9 +19,9 @@
 
 #import <Foundation/Foundation.h>
 #if !__LP64__
-	#import <QuickTime/QuickTime.h>
+	#import "../QuickTime/QuickTime.h"
 #endif
-#import <QTKit/QTKitDefines.h>
+#import "QTKitDefines.h"
 
 	// media types
 /*!

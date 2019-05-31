@@ -6,12 +6,12 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <QTKit/QTKitDefines.h>
+#import "QTKitDefines.h"
 
 #if (QTKIT_VERSION_MAX_ALLOWED >= QTKIT_VERSION_7_2) && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
 
-#import <QTKit/QTCaptureOutput.h>
-#import <QTKit/QTTime.h>
+#import "QTCaptureOutput.h"
+#import "QTTime.h"
 
 enum {
     QTCaptureFileOutputBufferDestinationNewFile	= 1,

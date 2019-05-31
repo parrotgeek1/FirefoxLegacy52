@@ -16,13 +16,13 @@
 #ifndef __QUICKTIMEMUSIC_K__
 #define __QUICKTIMEMUSIC_K__
 
-#include <QuickTime/QuickTimeMusic.h>
+#include "QuickTimeMusic.h"
 /*
 	Example usage:
 
 		#define QTMIDI_BASENAME()	Fred
 		#define QTMIDI_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeMusic.k.h>
+		#include "QuickTimeMusic.k.h"
 
 	To specify that your component implementation does not use globals, do not #define QTMIDI_GLOBALS
 */
@@ -58,7 +58,7 @@
 
 		#define MUSIC_BASENAME()	Fred
 		#define MUSIC_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeMusic.k.h>
+		#include "QuickTimeMusic.k.h"
 
 	To specify that your component implementation does not use globals, do not #define MUSIC_GLOBALS
 */
@@ -247,7 +247,7 @@
 
 		#define NA_BASENAME()	Fred
 		#define NA_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeMusic.k.h>
+		#include "QuickTimeMusic.k.h"
 
 	To specify that your component implementation does not use globals, do not #define NA_GLOBALS
 */
@@ -373,7 +373,7 @@
 
 		#define TUNE_BASENAME()	Fred
 		#define TUNE_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QuickTimeMusic.k.h>
+		#include "QuickTimeMusic.k.h"
 
 	To specify that your component implementation does not use globals, do not #define TUNE_GLOBALS
 */

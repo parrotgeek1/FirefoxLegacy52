@@ -6,7 +6,7 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <QTKit/QTKitDefines.h>
+#import "QTKitDefines.h"
 
 #if QTKIT_VERSION_MAX_ALLOWED >= QTKIT_VERSION_7_2
 

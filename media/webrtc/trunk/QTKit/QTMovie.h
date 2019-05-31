@@ -39,14 +39,14 @@
 					that is not currently set as editable (for instance, by calling appendSelectionFromMovie: on an uneditable movie).
 */
 
-#import <QTKit/QTKitDefines.h>
-#import <QTKit/QTTime.h>
-#import <QTKit/QTTimeRange.h>
+#import "QTKitDefines.h"
+#import "QTTime.h"
+#import "QTTimeRange.h"
 
 #import <Cocoa/Cocoa.h>
 
 #if !__LP64__
-#import <QuickTime/QuickTime.h>
+#import "../QuickTime/QuickTime.h"
 #endif
 
 @class QTMovie;

@@ -6,7 +6,7 @@
 */
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKitDefines.h>
+#import "QTKitDefines.h"
 
 @class QTMovie;
 @class QTMovieControllerView;

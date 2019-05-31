@@ -16,13 +16,13 @@
 #ifndef __QTSTREAMINGCOMPONENTS_K__
 #define __QTSTREAMINGCOMPONENTS_K__
 
-#include <QuickTime/QTStreamingComponents.h>
+#include "QTStreamingComponents.h"
 /*
 	Example usage:
 
 		#define QTSSOURCER_BASENAME()	Fred
 		#define QTSSOURCER_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QTStreamingComponents.k.h>
+		#include "QTStreamingComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define QTSSOURCER_GLOBALS
 */
@@ -73,7 +73,7 @@
 
 		#define RTPRSSM_BASENAME()	Fred
 		#define RTPRSSM_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QTStreamingComponents.k.h>
+		#include "QTStreamingComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define RTPRSSM_GLOBALS
 */
@@ -196,7 +196,7 @@
 
 		#define RTPMP_BASENAME()	Fred
 		#define RTPMP_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QTStreamingComponents.k.h>
+		#include "QTStreamingComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define RTPMP_GLOBALS
 */
@@ -304,7 +304,7 @@
 
 		#define RTPPB_BASENAME()	Fred
 		#define RTPPB_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/QTStreamingComponents.k.h>
+		#include "QTStreamingComponents.k.h"
 
 	To specify that your component implementation does not use globals, do not #define RTPPB_GLOBALS
 */

@@ -5,7 +5,7 @@
 
 */
 #import <Foundation/Foundation.h>
-#import <QTKit/QTKitDefines.h>
+#import "QTKitDefines.h"
 #pragma mark Export Options Identifiers
 
 

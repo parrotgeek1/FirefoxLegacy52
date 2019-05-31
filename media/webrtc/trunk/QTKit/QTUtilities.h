@@ -6,7 +6,7 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <QTKit/QTKitDefines.h>
+#import "QTKitDefines.h"
 
 	// helper functions
 QTKIT_EXTERN NSString *QTStringForOSType (OSType type)				AVAILABLE_QTKIT_VERSION_7_0_AND_LATER;

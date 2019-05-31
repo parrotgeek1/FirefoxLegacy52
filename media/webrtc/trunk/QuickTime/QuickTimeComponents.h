@@ -21,15 +21,15 @@
 #endif
 
 #ifndef __IMAGECOMPRESSION__
-#include <QuickTime/ImageCompression.h>
+#include "ImageCompression.h"
 #endif
 
 #ifndef __MOVIES__
-#include <QuickTime/Movies.h>
+#include "Movies.h"
 #endif
 
 #ifndef __QUICKTIMEMUSIC__
-#include <QuickTime/QuickTimeMusic.h>
+#include "QuickTimeMusic.h"
 #endif
 
 

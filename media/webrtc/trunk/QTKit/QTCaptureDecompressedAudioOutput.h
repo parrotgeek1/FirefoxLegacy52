@@ -6,8 +6,8 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <QTKit/QTCaptureOutput.h>
-#import <QTKit/QTKitDefines.h>
+#import "QTCaptureOutput.h"
+#import "QTKitDefines.h"
 
 #if (QTKIT_VERSION_MAX_ALLOWED >= QTKIT_VERSION_7_6_3) && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
 

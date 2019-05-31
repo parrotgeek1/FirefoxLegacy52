@@ -16,13 +16,13 @@
 #ifndef __MOVIES_K__
 #define __MOVIES_K__
 
-#include <QuickTime/Movies.h>
+#include "Movies.h"
 /*
 	Example usage:
 
 		#define VIDEOMEDIA_BASENAME()	Fred
 		#define VIDEOMEDIA_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/Movies.k.h>
+		#include "Movies.k.h"
 
 	To specify that your component implementation does not use globals, do not #define VIDEOMEDIA_GLOBALS
 */
@@ -64,7 +64,7 @@
 
 		#define TEXTMEDIA_BASENAME()	Fred
 		#define TEXTMEDIA_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/Movies.k.h>
+		#include "Movies.k.h"
 
 	To specify that your component implementation does not use globals, do not #define TEXTMEDIA_GLOBALS
 */
@@ -131,7 +131,7 @@ enum {
 
 		#define SPRITEMEDIA_BASENAME()	Fred
 		#define SPRITEMEDIA_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/Movies.k.h>
+		#include "Movies.k.h"
 
 	To specify that your component implementation does not use globals, do not #define SPRITEMEDIA_GLOBALS
 */
@@ -239,7 +239,7 @@ enum {
 
 		#define FLASHMEDIA_BASENAME()	Fred
 		#define FLASHMEDIA_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/Movies.k.h>
+		#include "Movies.k.h"
 
 	To specify that your component implementation does not use globals, do not #define FLASHMEDIA_GLOBALS
 */
@@ -305,7 +305,7 @@ enum {
 
 		#define MOVIEMEDIA_BASENAME()	Fred
 		#define MOVIEMEDIA_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/Movies.k.h>
+		#include "Movies.k.h"
 
 	To specify that your component implementation does not use globals, do not #define MOVIEMEDIA_GLOBALS
 */
@@ -353,7 +353,7 @@ enum {
 
 		#define MEDIA3D_BASENAME()	Fred
 		#define MEDIA3D_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/Movies.k.h>
+		#include "Movies.k.h"
 
 	To specify that your component implementation does not use globals, do not #define MEDIA3D_GLOBALS
 */
@@ -419,7 +419,7 @@ enum {
 
 		#define MC_BASENAME()	Fred
 		#define MC_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/Movies.k.h>
+		#include "Movies.k.h"
 
 	To specify that your component implementation does not use globals, do not #define MC_GLOBALS
 */
@@ -599,7 +599,7 @@ enum {
 
 		#define MUSICMEDIA_BASENAME()	Fred
 		#define MUSICMEDIA_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/Movies.k.h>
+		#include "Movies.k.h"
 
 	To specify that your component implementation does not use globals, do not #define MUSICMEDIA_GLOBALS
 */

@@ -6,11 +6,11 @@
 */
 
 #import <Foundation/Foundation.h>
-#import <QTKit/QTKitDefines.h>
+#import "QTKitDefines.h"
 
 #if (QTKIT_VERSION_MAX_ALLOWED >= QTKIT_VERSION_7_2) && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
 
-#import <QTKit/QTTime.h>
+#import "QTTime.h"
 #import <CoreAudio/CoreAudioTypes.h>	// AudioBufferList and AudioStreamPacketDescription
 
 QTKIT_EXTERN NSString * const QTSampleBufferSMPTETimeAttribute					AVAILABLE_QTKIT_VERSION_7_2_AND_LATER;  // NSValue interpreted as a SMPTETime (defined in CoreAudio/CoreAudioTypes.h). See QTTime.h for operations that can be performed on SMPTETime structures.

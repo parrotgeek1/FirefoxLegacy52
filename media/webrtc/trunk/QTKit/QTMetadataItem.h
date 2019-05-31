@@ -6,7 +6,7 @@
 */
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import "QTKit.h"
 
 // metadata formats
 QTKIT_EXTERN NSString * const QTMetadataFormatQuickTimeUserData								AVAILABLE_MAC_OS_X_VERSION_10_7_AND_LATER;

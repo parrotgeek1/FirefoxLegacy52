@@ -16,13 +16,13 @@
 #ifndef __MEDIAHANDLERS_K__
 #define __MEDIAHANDLERS_K__
 
-#include <QuickTime/MediaHandlers.h>
+#include "MediaHandlers.h"
 /*
 	Example usage:
 
 		#define CALLCOMPONENT_BASENAME()	Fred
 		#define CALLCOMPONENT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/MediaHandlers.k.h>
+		#include "MediaHandlers.k.h"
 
 	To specify that your component implementation does not use globals, do not #define CALLCOMPONENT_GLOBALS
 */
@@ -46,7 +46,7 @@
 
 		#define MEDIA_BASENAME()	Fred
 		#define MEDIA_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/MediaHandlers.k.h>
+		#include "MediaHandlers.k.h"
 
 	To specify that your component implementation does not use globals, do not #define MEDIA_GLOBALS
 */

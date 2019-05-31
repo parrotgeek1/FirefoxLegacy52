@@ -53,11 +53,11 @@
 #endif
 
 #ifndef __IMAGECOMPRESSION__
-#include <QuickTime/ImageCompression.h>
+#include "ImageCompression.h"
 #endif
 
 #ifndef __QUICKTIMEERRORS__
-#include <QuickTime/QuickTimeErrors.h>
+#include "QuickTimeErrors.h"
 #endif
 
 

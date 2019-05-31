@@ -6,7 +6,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <QTKit/QTKitDefines.h>
+#import "QTKitDefines.h"
 
 #if (QTKIT_VERSION_MAX_ALLOWED >= QTKIT_VERSION_7_2) && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
 
@@ -33,7 +33,7 @@ QTKIT_EXTERN NSString * const QTFormatDescriptionVideoEncodedPixelsSizeAttribute
 }
 
 - (NSString *)mediaType;	// Media types defined in QTMedia.h
-- (UInt32)formatType;		// A four character code representing the format or codec type. Video codec types are defined in <QuickTime/ImageCompression.h>. Audio codec types are define in <CoreAudio/CoreAudioTypes.h>.
+- (UInt32)formatType;		// A four character code representing the format or codec type. Video codec types are defined in "../QuickTime/ImageCompression.h>. Audio codec types are define in <CoreAudio/CoreAudioTypes.h".
 - (NSString *)localizedFormatSummary;
 
 - (NSData *)quickTimeSampleDescription;	// Contains a QuickTime SampleDescription structure

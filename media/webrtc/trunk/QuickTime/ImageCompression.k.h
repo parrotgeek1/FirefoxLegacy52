@@ -16,7 +16,7 @@
 #ifndef __IMAGECOMPRESSION_K__
 #define __IMAGECOMPRESSION_K__
 
-#include <QuickTime/ImageCompression.h>
+#include "ImageCompression.h"
 #ifndef __QTUUID__
 #define __QTUUID__ 1
 #endif  /* !defined(__QTUUID__) */
@@ -26,7 +26,7 @@
 
 		#define GRAPHICSIMPORT_BASENAME()	Fred
 		#define GRAPHICSIMPORT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/ImageCompression.k.h>
+		#include "ImageCompression.k.h"
 
 	To specify that your component implementation does not use globals, do not #define GRAPHICSIMPORT_GLOBALS
 */
@@ -281,7 +281,7 @@
 
 		#define GRAPHICSEXPORT_BASENAME()	Fred
 		#define GRAPHICSEXPORT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/ImageCompression.k.h>
+		#include "ImageCompression.k.h"
 
 	To specify that your component implementation does not use globals, do not #define GRAPHICSEXPORT_GLOBALS
 */
@@ -557,7 +557,7 @@
 
 		#define IMAGETRANSCODER_BASENAME()	Fred
 		#define IMAGETRANSCODER_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/ImageCompression.k.h>
+		#include "ImageCompression.k.h"
 
 	To specify that your component implementation does not use globals, do not #define IMAGETRANSCODER_GLOBALS
 */
@@ -596,7 +596,7 @@
 
 		#define QT_BASENAME()	Fred
 		#define QT_GLOBALS()	FredGlobalsHandle
-		#include <QuickTime/ImageCompression.k.h>
+		#include "ImageCompression.k.h"
 
 	To specify that your component implementation does not use globals, do not #define QT_GLOBALS
 */
