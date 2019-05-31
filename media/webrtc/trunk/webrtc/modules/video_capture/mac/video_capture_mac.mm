@@ -259,8 +259,6 @@ VideoCaptureImpl::CreateDeviceInfo(const int32_t id)
     return newCaptureInfoModule;
 #endif
 
-#endif
-
 }
 
 /**************************************************************************
