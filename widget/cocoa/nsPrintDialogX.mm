@@ -126,7 +126,10 @@ nsPrintDialogServiceX::Show(nsPIDOMWindowOuter *aParent, nsIPrintSettings *aSett
     NSDictionary *devDesc = [win deviceDescription];
     if (devDesc) {
       NSSize res = [[devDesc objectForKey: NSDeviceResolution] sizeValue];
-      float scale = [win backingScaleFactor];
+      float scale = 1.0f;
+      if ([win respondsToSelector:@selector(backingScaleFactor)]) {
+        scale = [win backingScaleFactor];
+      }
       if (scale > 0) {
         settingsX->SetInchesScale(res.width / scale, res.height / scale);
       }
