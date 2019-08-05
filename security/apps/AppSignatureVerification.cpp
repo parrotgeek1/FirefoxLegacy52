@@ -649,7 +649,9 @@ VerifyCertificate(CERTCertificate* signerCert, void* voidContext, void* pinArg)
     return mozilla::psm::GetXPCOMFromNSSError(MapResultToPRErrorCode(rv));
   }
 
-  rv = BuildCertChain(trustDomain, certDER, Now(),
+  // 1556333000 seconds since the epoch should be about 2019-04-27T02:43:20.000Z
+  Time verificationTime = TimeFromEpochInSeconds(1556333000);
+  rv = BuildCertChain(trustDomain, certDER, verificationTime,
                       EndEntityOrCA::MustBeEndEntity,
                       KeyUsage::digitalSignature,
                       KeyPurposeId::id_kp_codeSigning,
