@@ -1,9 +1,10 @@
 brew unlink binutils
 ./mach bootstrap
 ./mach build
+if fails: ./mach clobber and do it again
 ./getcxx.sh
 ./mach package
-open the dmg in obj
+open the dmg in obj-i386-apple-darwin10/dist
 copy app somewhere
 ./patchcxx.sh Nightly.app
 ./shim.sh Nightly.app
