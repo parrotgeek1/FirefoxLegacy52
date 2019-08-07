@@ -2459,7 +2459,9 @@ function addMissingIntermediateCertificate() {
 
   try {
     let certDB = Cc["@mozilla.org/security/x509certdb;1"].getService(Ci.nsIX509CertDB);
-    certDB.addCertFromBase64(MISSING_INTERMEDIATE_CERTIFICATE, ",,");
+    // The last argument is a name which was actually ignored so later removed:
+    // https://dxr.mozilla.org/mozilla-esr52/rev/5350524bb6543084fbba8604ce050794d0bc70ae/security/manager/ssl/nsIX509CertDB.idl#418
+    certDB.addCertFromBase64(intermediate, ",,", "");
     logger.debug("new intermediate certificate added");
   } catch (e) {
     logger.error("failed to add new intermediate certificate:", e);
