@@ -16,6 +16,9 @@
 #include "nsPromiseFlatString.h"
 #include "secmod.h"
 
+#include "strnlen_hack.c"
+#define strnlen my_strnlen
+
 using mozilla::LogLevel;
 
 extern mozilla::LazyLogModule gPIPNSSLog;

@@ -1,4 +1,6 @@
-/* Implementation of strndup() for libc's that don't have it. */
+#ifndef _STRNLEN_HACK
+#define _STRNLEN_HACK
+/* Implementation of strnlen() for libc's that don't have it. */
 
 // http://www.cs.cmu.edu/afs/cs/project/theo-11/www/naive-bayes/bow_diff/argp/strndup.c
 
@@ -10,21 +12,10 @@
 /* Find the length of STRING, but scan at most MAXLEN characters.
    If no '\0' terminator is found in that many characters, return MAXLEN.  */
 size_t
-strnlen (const char *string, size_t maxlen)
+my_strnlen (const char *string, size_t maxlen)
 {
-  const char *end = memchr (string, '\0', maxlen);
+  const char *end = (const char *)memchr (string, '\0', maxlen);
   return end ? end - string : maxlen;
 }
 
-char *
-strndup (const char *s, size_t n)
-{
-  size_t len = strnlen (s, n);
-  char *new = malloc (len + 1);
-
-  if (new == NULL)
-    return NULL;
-
-  new[len] = '\0';
-  return memcpy (new, s, len);
-}
+#endif

@@ -19,6 +19,9 @@
 #include "prerror.h"
 #include "secerr.h"
 
+#include "strnlen_hack.c"
+#define strnlen my_strnlen
+
 extern mozilla::LazyLogModule gPIPNSSLog;
 
 NS_IMPL_ISUPPORTS(nsPK11Token, nsIPK11Token)

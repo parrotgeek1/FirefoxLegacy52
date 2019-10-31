@@ -1,3 +1,5 @@
+note: I compiled this using Xcode 9.2 on 10.12.6
+
 brew unlink binutils
 ./mach bootstrap
 ./mach build
@@ -7,4 +9,3 @@ if fails: ./mach clobber and do it again
 open the dmg in obj-i386-apple-darwin10/dist
 copy app somewhere
 ./patchcxx.sh Nightly.app
-./shim.sh Nightly.app
