@@ -3245,7 +3245,7 @@ NSEvent* gLastDragMouseDownEvent = nil;
     // the bug, it seems we need to have a draw already happening. Therefore,
     // we call it in drawRect:inContext:, when we know that a draw is in
     // progress.
-    mDidForceRefreshOpenGL = NO;
+    mDidForceRefreshOpenGL = nsCocoaFeatures::OnMavericksOrLater(); // ML could conceivably be using 10.6.2 GMA drivers
 
     mNeedsGLUpdate = NO;
 
