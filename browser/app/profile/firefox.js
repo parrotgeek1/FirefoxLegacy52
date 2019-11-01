@@ -1401,22 +1401,18 @@ pref("browser.translation.ui.show", false);
 // Allows to define the translation engine. Bing is default, Yandex may optionally switched on.
 pref("browser.translation.engine", "bing");
 
-// Telemetry settings.
-// Determines if Telemetry pings can be archived locally.
-pref("toolkit.telemetry.archive.enabled", true);
-
 // Telemetry experiments settings.
-pref("experiments.enabled", true);
+pref("experiments.enabled", false);
 pref("experiments.manifest.fetchIntervalSeconds", 86400);
 pref("experiments.manifest.uri", "https://telemetry-experiment.cdn.mozilla.net/manifest/v1/firefox/%VERSION%/%CHANNEL%");
 // Whether experiments are supported by the current application profile.
-pref("experiments.supported", true);
+pref("experiments.supported", false);
 
 // Enable GMP support in the addon manager.
 pref("media.gmp-provider.enabled", true);
 
 #ifdef NIGHTLY_BUILD
-pref("privacy.trackingprotection.ui.enabled", true);
+pref("privacy.trackingprotection.ui.enabled", false);
 #else
 pref("privacy.trackingprotection.ui.enabled", false);
 #endif
@@ -1425,9 +1421,9 @@ pref("privacy.trackingprotection.introURL", "https://www.mozilla.org/%LOCALE%/fi
 
 // Enable Contextual Identity Containers
 #ifdef NIGHTLY_BUILD
-pref("privacy.userContext.enabled", true);
-pref("privacy.userContext.ui.enabled", true);
-pref("privacy.usercontext.about_newtab_segregation.enabled", true);
+pref("privacy.userContext.enabled", false);
+pref("privacy.userContext.ui.enabled", false);
+pref("privacy.usercontext.about_newtab_segregation.enabled", false);
 #else
 pref("privacy.userContext.enabled", false);
 pref("privacy.userContext.ui.enabled", false);
@@ -1528,21 +1524,6 @@ pref("extensions.pocket.enabled", true);
 
 pref("signon.schemeUpgrades", true);
 
-// "Simplify Page" feature in Print Preview. This feature is disabled by default
-// in toolkit.
-//
-// This feature is only enabled on Nightly for Linux until bug 1306295 is fixed.
-// For non-Linux, this feature is only enabled up to early Beta.
-#ifdef UNIX_BUT_NOT_MAC
-#if defined(NIGHTLY_BUILD)
-pref("print.use_simplify_page", true);
-#endif
-#else
-#if defined(EARLY_BETA_OR_EARLIER)
-pref("print.use_simplify_page", true);
-#endif
-#endif
-
 // Space separated list of URLS that are allowed to send objects (instead of
 // only strings) through webchannels. This list is duplicated in mobile/android/app/mobile.js
 pref("webchannel.allowObject.urlWhitelist", "https://accounts.firefox.com https://content.cdn.mozilla.net https://input.mozilla.org https://support.mozilla.org https://install.mozilla.org");
@@ -1563,8 +1544,42 @@ pref("browser.crashReports.unsubmittedCheck.enabled", false);
 pref("browser.crashReports.unsubmittedCheck.chancesUntilSuppress", 4);
 pref("browser.crashReports.unsubmittedCheck.autoSubmit2", false);
 
-#ifdef NIGHTLY_BUILD
-// Enable the (fairly costly) client/server validation on nightly only. The other prefs
-// controlling validation are located in /services/sync/services-sync.js
-pref("services.sync.validation.enabled", true);
-#endif
+
+/* 0330: disable telemetry
+ * the pref (.unified) affects the behaviour of the pref (.enabled)
+ * IF unified=false then .enabled controls the telemetry module
+ * IF unified=true then .enabled ONLY controls whether to record extended data
+ * so make sure to have both set as false
+ * [NOTE] FF58+ 'toolkit.telemetry.enabled' is now LOCKED to reflect prerelease
+ * or release builds (true and false respectively), see [2]
+ * [1] https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/internals/preferences.html
+ * [2] https://medium.com/georg-fritzsche/data-preference-changes-in-firefox-58-2d5df9c428b5 ***/
+pref("toolkit.telemetry.unified", false);
+pref("toolkit.telemetry.enabled", false); // see [NOTE] above FF58+
+pref("toolkit.telemetry.server", "data:,");
+pref("toolkit.telemetry.archive.enabled", false);
+/* 0331: disable Telemetry Coverage
+ * [1] https://blog.mozilla.org/data/2018/08/20/effectively-measuring-search-in-firefox/ ***/
+pref("toolkit.telemetry.coverage.opt-out", true); // [HIDDEN PREF]
+/* 0340: disable Health Reports
+ * [SETTING] Privacy & Security>Firefox Data Collection & Use>Allow Firefox to send technical... data ***/
+pref("datareporting.healthreport.uploadEnabled", false);
+/* 0341: disable new data submission, master kill switch [FF41+]
+ * If disabled, no policy is shown or upload takes place, ever
+ * [1] https://bugzilla.mozilla.org/1195552 ***/
+pref("datareporting.policy.dataSubmissionEnabled", false);
+/* 0342: disable Studies (see 0503)
+ * [NOTE] This pref has no effect when Health Reports (0340) are disabled
+ * [SETTING] Privacy & Security>Firefox Data Collection & Use>...>Allow Firefox to install and run studies ***/
+pref("app.shield.optoutstudies.enabled", false);
+/* 0343: disable personalized Extension Recommendations in about:addons and AMO [FF65+]
+ * [NOTE] This pref has no effect when Health Reports (0340) are disabled
+ * [SETTING] Privacy & Security>Firefox Data Collection & Use>...>Allow Firefox to make personalized extension rec.
+ * [1] https://support.mozilla.org/kb/personalized-extension-recommendations ***/
+pref("browser.discovery.enabled", false);
+/* 0350: disable Crash Reports ***/
+pref("breakpad.reportURL", "");
+pref("browser.tabs.crashReporting.sendReport", false); // [FF44+]
+pref("browser.crashReports.unsubmittedCheck.enabled", false); // [FF51+]
+
+
