@@ -658,6 +658,9 @@ pref("plugin.state.java", 1);
 pref("plugin.load_flash_only", false);
 
 #ifdef XP_MACOSX
+pref("plugins.hide_infobar_for_outdated_plugin", true);
+#endif
+#ifdef XP_MACOSX
 pref("browser.preferences.animateFadeIn", true);
 #else
 pref("browser.preferences.animateFadeIn", false);
