@@ -69,12 +69,11 @@ int ViECaptureImpl::GetCaptureDevice(unsigned int list_number,
                                      char* device_nameUTF8,
                                      unsigned int device_nameUTF8Length,
                                      char* unique_idUTF8,
-                                     unsigned int unique_idUTF8Length,
-                                     pid_t* pid) {
+                                     unsigned int unique_idUTF8Length) {
   return shared_data_->input_manager()->GetDeviceName(
       list_number,
       device_nameUTF8, device_nameUTF8Length,
-      unique_idUTF8, unique_idUTF8Length, pid);
+      unique_idUTF8, unique_idUTF8Length);
 }
 
 int ViECaptureImpl::AllocateCaptureDevice(

@@ -174,8 +174,7 @@ public:
   virtual bool RecvReplyAllocateCaptureDevice(const int&) override;
   virtual bool RecvReplyGetCaptureCapability(const CaptureCapability& capability) override;
   virtual bool RecvReplyGetCaptureDevice(const nsCString& device_name,
-                                         const nsCString& device_id,
-                                         const bool& scary) override;
+                                         const nsCString& device_id) override;
   virtual bool RecvReplyFailure(void) override;
   virtual bool RecvReplySuccess(void) override;
   virtual void ActorDestroy(ActorDestroyReason aWhy) override;
@@ -205,8 +204,7 @@ public:
                        unsigned int list_number, char* device_nameUTF8,
                        const unsigned int device_nameUTF8Length,
                        char* unique_idUTF8,
-                       const unsigned int unique_idUTF8Length,
-                       bool* scary = nullptr);
+                       const unsigned int unique_idUTF8Length);
   void ShutdownAll();
   int EnsureInitialized(CaptureEngine aCapEngine);
 
@@ -250,7 +248,6 @@ private:
   webrtc::CaptureCapability mReplyCapability;
   nsCString mReplyDeviceName;
   nsCString mReplyDeviceID;
-  bool mReplyScary;
 };
 
 } // namespace camera

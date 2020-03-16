@@ -30,9 +30,7 @@ class ViECaptureImpl
   virtual int GetCaptureDevice(unsigned int list_number, char* device_nameUTF8,
                                const unsigned int device_nameUTF8Length,
                                char* unique_idUTF8,
-                               const unsigned int unique_idUTF8Length,
-                               pid_t* pid = nullptr);
-
+                               const unsigned int unique_idUTF8Length);
   virtual int AllocateCaptureDevice(const char* unique_idUTF8,
                                     const unsigned int unique_idUTF8Length,
                                     int& capture_id);

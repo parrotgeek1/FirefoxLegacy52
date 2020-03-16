@@ -52,7 +52,7 @@ MediaEngineRemoteVideoSource::Init()
     &mozilla::camera::CamerasChild::GetCaptureDevice,
     mCapEngine, mCaptureIndex,
     deviceName, kMaxDeviceNameLength,
-    uniqueId, kMaxUniqueIdLength, nullptr)) {
+    uniqueId, kMaxUniqueIdLength)) {
     LOG(("Error initializing RemoteVideoSource (GetCaptureDevice)"));
     return;
   }
@@ -496,7 +496,7 @@ void MediaEngineRemoteVideoSource::Refresh(int aIndex) {
     &mozilla::camera::CamerasChild::GetCaptureDevice,
     mCapEngine, aIndex,
     deviceName, sizeof(deviceName),
-    uniqueId, sizeof(uniqueId), nullptr)) {
+    uniqueId, sizeof(uniqueId))) {
     return;
   }
 

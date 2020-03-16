@@ -34,7 +34,6 @@ DesktopDisplayDevice::DesktopDisplayDevice() {
   screenId_ = kInvalidScreenId;
   deviceUniqueIdUTF8_ = NULL;
   deviceNameUTF8_ = NULL;
-  pid_ = 0;
 }
 
 DesktopDisplayDevice::~DesktopDisplayDevice() {
@@ -64,10 +63,6 @@ void DesktopDisplayDevice::setUniqueIdName(const char *deviceUniqueIdUTF8) {
   SetStringMember(&deviceUniqueIdUTF8_, deviceUniqueIdUTF8);
 }
 
-void DesktopDisplayDevice::setPid(const int pid) {
-  pid_ = pid;
-}
-
 ScreenId DesktopDisplayDevice::getScreenId() {
   return screenId_;
 }
@@ -80,10 +75,6 @@ const char *DesktopDisplayDevice::getUniqueIdName() {
   return deviceUniqueIdUTF8_;
 }
 
-pid_t DesktopDisplayDevice::getPid() {
-  return pid_;
-}
-
 DesktopDisplayDevice& DesktopDisplayDevice::operator= (DesktopDisplayDevice& other) {
   if (&other == this) {
     return *this;
@@ -91,7 +82,6 @@ DesktopDisplayDevice& DesktopDisplayDevice::operator= (DesktopDisplayDevice& oth
   screenId_ = other.getScreenId();
   setUniqueIdName(other.getUniqueIdName());
   setDeviceName(other.getDeviceName());
-  pid_ = other.getPid();
 
   return *this;
 }
@@ -281,7 +271,6 @@ void DesktopDeviceInfoImpl::InitializeWindowList() {
 
       pWinDevice->setScreenId(itr->id);
       pWinDevice->setDeviceName(itr->title.c_str());
-      pWinDevice->setPid(itr->pid);
 
       char idStr[BUFSIZ];
 #if WEBRTC_WIN

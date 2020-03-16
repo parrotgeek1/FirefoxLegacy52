@@ -18,12 +18,10 @@ public:
   void setScreenId(const ScreenId screenId);
   void setDeviceName(const char *deviceNameUTF8);
   void setUniqueIdName(const char *deviceUniqueIdUTF8);
-  void setPid(pid_t pid);
 
   ScreenId getScreenId();
   const char *getDeviceName();
   const char *getUniqueIdName();
-  pid_t getPid();
 
   DesktopDisplayDevice& operator= (DesktopDisplayDevice& other);
 
@@ -31,7 +29,6 @@ protected:
   ScreenId screenId_;
   char* deviceNameUTF8_;
   char* deviceUniqueIdUTF8_;
-  pid_t pid_;
 };
 
 typedef std::map<intptr_t,DesktopDisplayDevice*> DesktopDisplayDeviceList;

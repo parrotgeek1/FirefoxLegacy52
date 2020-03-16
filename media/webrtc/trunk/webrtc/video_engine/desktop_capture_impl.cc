@@ -58,8 +58,7 @@ int32_t ScreenDeviceInfoImpl::GetDeviceName(uint32_t deviceNumber,
                                             char* deviceUniqueIdUTF8,
                                             uint32_t deviceUniqueIdUTF8Length,
                                             char* productUniqueIdUTF8,
-                                            uint32_t productUniqueIdUTF8Length,
-                                            pid_t* pid) {
+                                            uint32_t productUniqueIdUTF8Length) {
 
   DesktopDisplayDevice desktopDisplayDevice;
 
@@ -155,8 +154,7 @@ int32_t AppDeviceInfoImpl::GetDeviceName(uint32_t deviceNumber,
                                          char* deviceUniqueIdUTF8,
                                          uint32_t deviceUniqueIdUTF8Length,
                                          char* productUniqueIdUTF8,
-                                         uint32_t productUniqueIdUTF8Length,
-                                         pid_t* pid) {
+                                         uint32_t productUniqueIdUTF8Length) {
 
   DesktopApplication desktopApplication;
 
@@ -259,8 +257,7 @@ int32_t WindowDeviceInfoImpl::GetDeviceName(uint32_t deviceNumber,
                                             char* deviceUniqueIdUTF8,
                                             uint32_t deviceUniqueIdUTF8Length,
                                             char* productUniqueIdUTF8,
-                                            uint32_t productUniqueIdUTF8Length,
-                                            pid_t* pid) {
+                                            uint32_t productUniqueIdUTF8Length) {
 
   DesktopDisplayDevice desktopDisplayDevice;
 
@@ -294,9 +291,6 @@ int32_t WindowDeviceInfoImpl::GetDeviceName(uint32_t deviceNumber,
       memcpy(deviceUniqueIdUTF8,
              deviceUniqueId,
              len);
-    }
-    if (pid) {
-      *pid = desktopDisplayDevice.getPid();
     }
   }
 
