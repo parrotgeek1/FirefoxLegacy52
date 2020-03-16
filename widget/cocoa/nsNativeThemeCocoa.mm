@@ -92,6 +92,13 @@ extern "C" {
 
 @end
 
+static inline UInt8
+ConvertToPressState(EventStates aButtonState, UInt8 aPressState)
+{
+  // If the button is pressed, return the press state passed in. Otherwise, return 0.
+  return aButtonState.HasAllStates(NS_EVENT_STATE_ACTIVE | NS_EVENT_STATE_HOVER) ? aPressState : 0;
+}
+
 // These two classes don't actually add any behavior over NSButtonCell. Their
 // purpose is to make it easy to distinguish NSCell objects that are used for
 // drawing radio buttons / checkboxes from other cell types.
@@ -606,7 +613,7 @@ nsNativeThemeCocoa::~nsNativeThemeCocoa()
 }
 
 // Limit on the area of the target rect (in pixels^2) in
-// DrawCellWithScaling() and DrawButton() and above which we
+// DrawCellWithScaling(), DrawButton() and DrawScrollbar(), above which we
 // don't draw the object into a bitmap buffer.  This is to avoid crashes in
 // [NSGraphicsContext graphicsContextWithGraphicsPort:flipped:] and
 // CGContextDrawImage(), and also to avoid very poor drawing performance in
@@ -910,6 +917,16 @@ static void DrawCellWithSnapping(NSCell *cell,
 @interface NSWindow(CoreUIRendererPrivate)
 + (CUIRendererRef)coreUIRenderer;
 @end
+
+static void
+RenderWithCoreUILegacy(CGRect aRect, CGContextRef cgContext, NSDictionary* aOptions, bool aSkipAreaCheck)
+{
+  if (aSkipAreaCheck || (aRect.size.width * aRect.size.height <= BITMAP_MAX_AREA)) {
+    CUIRendererRef renderer = [NSWindow respondsToSelector:@selector(coreUIRenderer)]
+      ? [NSWindow coreUIRenderer] : nil;
+    CUIDraw(renderer, aRect, cgContext, (CFDictionaryRef)aOptions, NULL);
+  }
+}
 
 static id
 GetAquaAppearance()
@@ -2101,6 +2118,109 @@ nsNativeThemeCocoa::GetScrollbarPressStates(nsIFrame* aFrame,
   }
 }
 
+// Both of the following sets of numbers were derived by loading the testcase in
+// bmo bug 380185 in Safari and observing its behavior for various heights of scrollbar.
+// These magic numbers are the minimum sizes we can draw a scrollbar and still 
+// have room for everything to display, including the thumb
+#define MIN_SCROLLBAR_SIZE_WITH_THUMB 61
+#define MIN_SMALL_SCROLLBAR_SIZE_WITH_THUMB 49
+// And these are the minimum sizes if we don't draw the thumb
+#define MIN_SCROLLBAR_SIZE 56
+#define MIN_SMALL_SCROLLBAR_SIZE 46
+
+void
+nsNativeThemeCocoa::GetScrollbarDrawInfo(HIThemeTrackDrawInfo& aTdi, nsIFrame *aFrame, 
+                                         const CGSize& aSize, bool aShouldGetButtonStates)
+{
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
+
+  int32_t curpos = CheckIntAttr(aFrame, nsGkAtoms::curpos, 0);
+  int32_t minpos = CheckIntAttr(aFrame, nsGkAtoms::minpos, 0);
+  int32_t maxpos = CheckIntAttr(aFrame, nsGkAtoms::maxpos, 100);
+  int32_t thumbSize = CheckIntAttr(aFrame, nsGkAtoms::pageincrement, 10);
+
+  bool isHorizontal = aFrame->GetContent()->AttrValueIs(kNameSpaceID_None, nsGkAtoms::orient, 
+                                                          nsGkAtoms::horizontal, eCaseMatters);
+  bool isSmall = aFrame->StyleDisplay()->mAppearance == NS_THEME_SCROLLBAR_SMALL;
+
+  aTdi.version = 0;
+  aTdi.kind = isSmall ? kThemeSmallScrollBar : kThemeMediumScrollBar;
+  aTdi.bounds.origin = CGPointZero;
+  aTdi.bounds.size = aSize;
+  aTdi.min = minpos;
+  aTdi.max = maxpos;
+  aTdi.value = curpos;
+  aTdi.attributes = 0;
+  aTdi.enableState = kThemeTrackActive;
+  if (isHorizontal)
+    aTdi.attributes |= kThemeTrackHorizontal;
+
+  aTdi.trackInfo.scrollbar.viewsize = (SInt32)thumbSize;
+
+  // This should be done early on so things like "kThemeTrackNothingToScroll" can
+  // override the active enable state.
+  aTdi.enableState = FrameIsInActiveWindow(aFrame) ? kThemeTrackActive : kThemeTrackInactive;
+
+  /* Only display features if we have enough room for them.
+   * Gecko still maintains the scrollbar info; this is just a visual issue (bug 380185).
+   */
+  int32_t longSideLength = (int32_t)(isHorizontal ? (aSize.width) : (aSize.height));
+  if (longSideLength >= (isSmall ? MIN_SMALL_SCROLLBAR_SIZE_WITH_THUMB : MIN_SCROLLBAR_SIZE_WITH_THUMB)) {
+    aTdi.attributes |= kThemeTrackShowThumb;
+  }
+  else if (longSideLength < (isSmall ? MIN_SMALL_SCROLLBAR_SIZE : MIN_SCROLLBAR_SIZE)) {
+    aTdi.enableState = kThemeTrackNothingToScroll;
+    return;
+  }
+
+  aTdi.trackInfo.scrollbar.pressState = 0;
+
+  // Only go get these scrollbar button states if we need it. For example,
+  // there's no reason to look up scrollbar button states when we're only
+  // creating a TrackDrawInfo to determine the size of the thumb. There's
+  // also no reason to do this on Lion or later, whose scrollbars have no
+  // arrow buttons.
+  if (aShouldGetButtonStates && !nsCocoaFeatures::OnLionOrLater()) {
+    EventStates buttonStates[4];
+    GetScrollbarPressStates(aFrame, buttonStates);
+    NSString *buttonPlacement = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleScrollBarVariant"];
+    // It seems that unless all four buttons are showing, kThemeTopOutsideArrowPressed is the correct constant for
+    // the up scrollbar button.
+    if ([buttonPlacement isEqualToString:@"DoubleBoth"]) {
+      aTdi.trackInfo.scrollbar.pressState = ConvertToPressState(buttonStates[0], kThemeTopOutsideArrowPressed) |
+                                            ConvertToPressState(buttonStates[1], kThemeTopInsideArrowPressed) |
+                                            ConvertToPressState(buttonStates[2], kThemeBottomInsideArrowPressed) |
+                                            ConvertToPressState(buttonStates[3], kThemeBottomOutsideArrowPressed);
+    } else {
+      aTdi.trackInfo.scrollbar.pressState = ConvertToPressState(buttonStates[0], kThemeTopOutsideArrowPressed) |
+                                            ConvertToPressState(buttonStates[1], kThemeBottomOutsideArrowPressed) |
+                                            ConvertToPressState(buttonStates[2], kThemeTopOutsideArrowPressed) |
+                                            ConvertToPressState(buttonStates[3], kThemeBottomOutsideArrowPressed);
+    }
+  }
+
+  NS_OBJC_END_TRY_ABORT_BLOCK;
+}
+
+static void
+RenderScrollbar(CGContextRef cgContext, const HIRect& aRenderRect, void* aData)
+{
+  HIThemeTrackDrawInfo* tdi = (HIThemeTrackDrawInfo*)aData;
+  HIThemeDrawTrack(tdi, NULL, cgContext, HITHEME_ORIENTATION);
+}
+
+void
+nsNativeThemeCocoa::DrawScrollbar(CGContextRef aCGContext, const HIRect& aBoxRect, nsIFrame *aFrame)
+{
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
+
+  HIThemeTrackDrawInfo tdi;
+  GetScrollbarDrawInfo(tdi, aFrame, aBoxRect.size, true); // True means we want the press states
+  RenderTransformedHIThemeControl(aCGContext, aBoxRect, RenderScrollbar, &tdi);
+
+  NS_OBJC_END_TRY_ABORT_BLOCK;
+}
+
 nsIFrame*
 nsNativeThemeCocoa::GetParentScrollbarFrame(nsIFrame *aFrame)
 {
@@ -2281,6 +2401,12 @@ DrawVibrancyBackground(CGContextRef cgContext, CGRect inBoxRect,
     [NSGraphicsContext restoreGraphicsState];
     [NSGraphicsContext setCurrentContext:savedContext];
   }
+}
+
+static bool
+ScrollbarTrackAndThumbDrawSeparately()
+{
+  return nsLookAndFeel::UseOverlayScrollbars() || nsCocoaFeatures::OnLionOrLater();
 }
 
 bool
@@ -2774,43 +2900,47 @@ nsNativeThemeCocoa::DrawWidgetBackground(nsRenderingContext* aContext,
 
     case NS_THEME_SCROLLBAR_SMALL:
     case NS_THEME_SCROLLBAR:
+      if (!ScrollbarTrackAndThumbDrawSeparately()) {
+        DrawScrollbar(cgContext, macRect, aFrame);
+      }
       break;
     case NS_THEME_SCROLLBARTHUMB_VERTICAL:
-    case NS_THEME_SCROLLBARTHUMB_HORIZONTAL: {
-      BOOL isOverlay = nsLookAndFeel::UseOverlayScrollbars();
-      BOOL isHorizontal = (aWidgetType == NS_THEME_SCROLLBARTHUMB_HORIZONTAL);
-      BOOL isRolledOver = IsParentScrollbarRolledOver(aFrame);
-      nsIFrame* scrollbarFrame = GetParentScrollbarFrame(aFrame);
-      bool isSmall = (scrollbarFrame && scrollbarFrame->StyleDisplay()->mAppearance == NS_THEME_SCROLLBAR_SMALL);
-      if (isOverlay && !isRolledOver) {
-        if (isHorizontal) {
-          macRect.origin.y += 4;
-          macRect.size.height -= 4;
-        } else {
-          if (aFrame->StyleVisibility()->mDirection !=
-              NS_STYLE_DIRECTION_RTL) {
-            macRect.origin.x += 4;
+    case NS_THEME_SCROLLBARTHUMB_HORIZONTAL:
+      if (ScrollbarTrackAndThumbDrawSeparately()) {
+        BOOL isOverlay = nsLookAndFeel::UseOverlayScrollbars();
+        BOOL isHorizontal = (aWidgetType == NS_THEME_SCROLLBARTHUMB_HORIZONTAL);
+        BOOL isRolledOver = IsParentScrollbarRolledOver(aFrame);
+        nsIFrame* scrollbarFrame = GetParentScrollbarFrame(aFrame);
+        bool isSmall = (scrollbarFrame && scrollbarFrame->StyleDisplay()->mAppearance == NS_THEME_SCROLLBAR_SMALL);
+        if (isOverlay && (!nsCocoaFeatures::OnMountainLionOrLater() || !isRolledOver)) {
+          if (isHorizontal) {
+            macRect.origin.y += 4;
+            macRect.size.height -= 4;
+          } else {
+            if (aFrame->StyleVisibility()->mDirection !=
+                NS_STYLE_DIRECTION_RTL) {
+              macRect.origin.x += 4;
+            }
+            macRect.size.width -= 4;
           }
-          macRect.size.width -= 4;
         }
+        const BOOL isOnTopOfDarkBackground = IsDarkBackground(aFrame);
+        // Scrollbar thumbs have a too high minimum width when rendered through
+        // NSAppearance on 10.10, so we call RenderWithCoreUILegacy here.
+        RenderWithCoreUILegacy(macRect, cgContext,
+                [NSDictionary dictionaryWithObjectsAndKeys:
+                  (isOverlay ? @"kCUIWidgetOverlayScrollBar" : @"scrollbar"), @"widget",
+                  (isSmall ? @"small" : @"regular"), @"size",
+                  (isRolledOver ? @"rollover" : @"normal"), @"state",
+                  (isHorizontal ? @"kCUIOrientHorizontal" : @"kCUIOrientVertical"), @"kCUIOrientationKey",
+                  (isOnTopOfDarkBackground ? @"kCUIVariantWhite" : @""), @"kCUIVariantKey",
+                  [NSNumber numberWithBool:YES], @"indiconly",
+                  [NSNumber numberWithBool:YES], @"kCUIThumbProportionKey",
+                  [NSNumber numberWithBool:YES], @"is.flipped",
+                  nil],
+                true);
       }
-      const BOOL isOnTopOfDarkBackground = IsDarkBackground(aFrame);
-      NSMutableDictionary* options = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-        (isOverlay ? @"kCUIWidgetOverlayScrollBar" : @"scrollbar"), @"widget",
-        (isSmall ? @"small" : @"regular"), @"size",
-        (isHorizontal ? @"kCUIOrientHorizontal" : @"kCUIOrientVertical"), @"kCUIOrientationKey",
-        (isOnTopOfDarkBackground ? @"kCUIVariantWhite" : @""), @"kCUIVariantKey",
-        [NSNumber numberWithBool:YES], @"indiconly",
-        [NSNumber numberWithBool:YES], @"kCUIThumbProportionKey",
-        [NSNumber numberWithBool:YES], @"is.flipped",
-        nil];
-      if (isRolledOver) {
-        [options setObject:@"rollover" forKey:@"state"];
-      }
-      RenderWithCoreUI(macRect, cgContext, options, true);
-    }
       break;
-
     case NS_THEME_SCROLLBARBUTTON_UP:
     case NS_THEME_SCROLLBARBUTTON_LEFT:
 #if SCROLLBARS_VISUAL_DEBUG
@@ -2826,26 +2956,42 @@ nsNativeThemeCocoa::DrawWidgetBackground(nsRenderingContext* aContext,
 #endif
     break;
     case NS_THEME_SCROLLBARTRACK_HORIZONTAL:
-    case NS_THEME_SCROLLBARTRACK_VERTICAL: {
-      BOOL isOverlay = nsLookAndFeel::UseOverlayScrollbars();
-      if (!isOverlay || IsParentScrollbarRolledOver(aFrame)) {
-        BOOL isHorizontal = (aWidgetType == NS_THEME_SCROLLBARTRACK_HORIZONTAL);
-        nsIFrame* scrollbarFrame = GetParentScrollbarFrame(aFrame);
-        bool isSmall = (scrollbarFrame && scrollbarFrame->StyleDisplay()->mAppearance == NS_THEME_SCROLLBAR_SMALL);
-        const BOOL isOnTopOfDarkBackground = IsDarkBackground(aFrame);
-        RenderWithCoreUI(macRect, cgContext,
-                [NSDictionary dictionaryWithObjectsAndKeys:
-                  (isOverlay ? @"kCUIWidgetOverlayScrollBar" : @"scrollbar"), @"widget",
-                  (isSmall ? @"small" : @"regular"), @"size",
-                  (isHorizontal ? @"kCUIOrientHorizontal" : @"kCUIOrientVertical"), @"kCUIOrientationKey",
-                  (isOnTopOfDarkBackground ? @"kCUIVariantWhite" : @""), @"kCUIVariantKey",
-                  [NSNumber numberWithBool:YES], @"noindicator",
-                  [NSNumber numberWithBool:YES], @"kCUIThumbProportionKey",
-                  [NSNumber numberWithBool:YES], @"is.flipped",
-                  nil],
-                true);
+    case NS_THEME_SCROLLBARTRACK_VERTICAL:
+      if (ScrollbarTrackAndThumbDrawSeparately()) {
+        BOOL isOverlay = nsLookAndFeel::UseOverlayScrollbars();
+        if (!isOverlay || IsParentScrollbarRolledOver(aFrame)) {
+          BOOL isHorizontal = (aWidgetType == NS_THEME_SCROLLBARTRACK_HORIZONTAL);
+          nsIFrame* scrollbarFrame = GetParentScrollbarFrame(aFrame);
+          bool isSmall = (scrollbarFrame && scrollbarFrame->StyleDisplay()->mAppearance == NS_THEME_SCROLLBAR_SMALL);
+          if (isOverlay && !nsCocoaFeatures::OnMountainLionOrLater()) {
+            // On OSX 10.7, scrollbars don't grow when hovered.
+            // The adjustments below were obtained by trial and error.
+            if (isHorizontal) {
+              macRect.origin.y += 2.0;
+            } else {
+              if (aFrame->StyleVisibility()->mDirection !=
+                    NS_STYLE_DIRECTION_RTL) {
+                macRect.origin.x += 3.0;
+              } else {
+                macRect.origin.x -= 1.0;
+              }
+            }
+          }
+
+          const BOOL isOnTopOfDarkBackground = IsDarkBackground(aFrame);
+          RenderWithCoreUILegacy(macRect, cgContext,
+                  [NSDictionary dictionaryWithObjectsAndKeys:
+                    (isOverlay ? @"kCUIWidgetOverlayScrollBar" : @"scrollbar"), @"widget",
+                    (isSmall ? @"small" : @"regular"), @"size",
+                    (isHorizontal ? @"kCUIOrientHorizontal" : @"kCUIOrientVertical"), @"kCUIOrientationKey",
+                    (isOnTopOfDarkBackground ? @"kCUIVariantWhite" : @""), @"kCUIVariantKey",
+                    [NSNumber numberWithBool:YES], @"noindicator",
+                    [NSNumber numberWithBool:YES], @"kCUIThumbProportionKey",
+                    [NSNumber numberWithBool:YES], @"is.flipped",
+                    nil],
+                  true);
+        }
       }
-    }
       break;
 
     case NS_THEME_TEXTFIELD_MULTILINE: {
@@ -2916,31 +3062,6 @@ nsNativeThemeCocoa::DrawWidgetBackground(nsRenderingContext* aContext,
         CGContextDrawLinearGradient(cgContext, backgroundGradient, start, end, 0);
         CGGradientRelease(backgroundGradient);
         CGColorSpaceRelease(rgb);
-      }
-    }
-      break;
-
-    case NS_THEME_MAC_SOURCE_LIST_SELECTION:
-    case NS_THEME_MAC_ACTIVE_SOURCE_LIST_SELECTION: {
-      // If we're in XUL tree, we need to rely on the source list's clear
-      // background display item. If we cleared the background behind the
-      // selections, the source list would not pick up the right font
-      // smoothing background. So, to simplify a bit, we only support vibrancy
-      // if we're in a source list.
-      if (VibrancyManager::SystemSupportsVibrancy() && IsInSourceList(aFrame)) {
-        ThemeGeometryType type = ThemeGeometryTypeForWidget(aFrame, aWidgetType);
-        DrawVibrancyBackground(cgContext, macRect, aFrame, type);
-      } else {
-        BOOL isActiveSelection =
-          aWidgetType == NS_THEME_MAC_ACTIVE_SOURCE_LIST_SELECTION;
-        RenderWithCoreUI(macRect, cgContext,
-          [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithBool:isActiveSelection], @"focus",
-            [NSNumber numberWithBool:YES], @"is.flipped",
-            @"kCUIVariantGradientSideBarSelection", @"kCUIVariantKey",
-            (FrameIsInActiveWindow(aFrame) ? @"normal" : @"inactive"), @"state",
-            @"gradient", @"widget",
-            nil]);
       }
     }
       break;
@@ -3074,26 +3195,32 @@ nsNativeThemeCocoa::GetWidgetBorder(nsDeviceContext* aContext,
     case NS_THEME_SCROLLBARTRACK_VERTICAL:
     {
       bool isHorizontal = (aWidgetType == NS_THEME_SCROLLBARTRACK_HORIZONTAL);
-      if (nsLookAndFeel::UseOverlayScrollbars()) {
-        if (!nsCocoaFeatures::OnYosemiteOrLater()) {
-          // Pre-10.10, we have to center the thumb rect in the middle of the
-          // scrollbar. Starting with 10.10, the expected rect for thumb
-          // rendering is the full width of the scrollbar.
-          if (isHorizontal) {
-            aResult->top = 2;
-            aResult->bottom = 1;
-          } else {
-            aResult->left = 2;
-            aResult->right = 1;
-          }
+
+      // On Lion and later, scrollbars have no arrows.
+      if (!nsCocoaFeatures::OnLionOrLater()) {
+        // There's only an endcap to worry about when both arrows are on the bottom
+        NSString *buttonPlacement = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleScrollBarVariant"];
+        if (!buttonPlacement || [buttonPlacement isEqualToString:@"DoubleMax"]) {
+          nsIFrame *scrollbarFrame = GetParentScrollbarFrame(aFrame);
+          if (!scrollbarFrame) return NS_ERROR_FAILURE;
+          bool isSmall = (scrollbarFrame->StyleDisplay()->mAppearance == NS_THEME_SCROLLBAR_SMALL);
+
+          // There isn't a metric for this, so just hardcode a best guess at the value.
+          // This value is even less exact due to the fact that the endcap is partially concave.
+          int32_t endcapSize = isSmall ? 5 : 6;
+
+          if (isHorizontal)
+            aResult->SizeTo(0, 0, 0, endcapSize);
+          else
+            aResult->SizeTo(endcapSize, 0, 0, 0);
         }
-        // Leave a bit of space at the start and the end on all OS X versions.
+      }
+
+      if (nsLookAndFeel::UseOverlayScrollbars()) {
         if (isHorizontal) {
-          aResult->left = 1;
-          aResult->right = 1;
+          aResult->SizeTo(2, 1, 1, 1);
         } else {
-          aResult->top = 1;
-          aResult->bottom = 1;
+          aResult->SizeTo(1, 1, 1, 2);
         }
       }
 
@@ -3570,6 +3697,18 @@ nsNativeThemeCocoa::WidgetStateChanged(nsIFrame* aFrame, uint8_t aWidgetType,
         aAttribute == nsGkAtoms::open ||
         aAttribute == nsGkAtoms::hover)
       *aShouldRepaint = true;
+
+    if ((aWidgetType == NS_THEME_SCROLLBAR ||
+         aWidgetType == NS_THEME_SCROLLBAR_SMALL) &&
+        !ScrollbarTrackAndThumbDrawSeparately() &&
+        (aAttribute == nsGkAtoms::curpos ||
+         aAttribute == nsGkAtoms::minpos ||
+         aAttribute == nsGkAtoms::maxpos ||
+         aAttribute == nsGkAtoms::pageincrement)) {
+      // 10.6-style scrollbars paint the thumb as part of the scrollbar,
+      // so we need to invalidate the scrollbar when the thumb moves.
+      *aShouldRepaint = true;
+    }
   }
 
   return NS_OK;
