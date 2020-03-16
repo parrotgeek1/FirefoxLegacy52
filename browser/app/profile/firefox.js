@@ -1585,4 +1585,10 @@ pref("breakpad.reportURL", "");
 pref("browser.tabs.crashReporting.sendReport", false); // [FF44+]
 pref("browser.crashReports.unsubmittedCheck.enabled", false); // [FF51+]
 
-
+pref("toolkit.telemetry.prompted", 2);
+pref("toolkit.telemetry.rejected", true);
+pref("datareporting.healthreport.service.enabled", false);
+pref("datareporting.healthreport.service.firstRun", false);
+pref("datareporting.healthreport.logging.consoleEnabled", false);
+pref("datareporting.policy.dataSubmissionPolicyResponseType", "accepted-info-bar-dismissed");
+pref("datareporting.policy.dataSubmissionPolicyAccepted", false);
