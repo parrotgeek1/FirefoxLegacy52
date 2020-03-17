@@ -14,7 +14,7 @@ if test "$OS_ARCH" = "WINNT" -o \
 fi
 
 if test "$OS_ARCH" = "WINNT"; then
-  MOZ_MAINTENANCE_SERVICE=1
+  MOZ_MAINTENANCE_SERVICE=0
   if ! test "$HAVE_64BIT_BUILD"; then
     if test "$MOZ_UPDATE_CHANNEL" = "nightly" -o \
             "$MOZ_UPDATE_CHANNEL" = "aurora" -o \
@@ -23,7 +23,7 @@ if test "$OS_ARCH" = "WINNT"; then
             "$MOZ_UPDATE_CHANNEL" = "release" -o \
             "$MOZ_UPDATE_CHANNEL" = "release-dev"; then
       if ! test "$MOZ_DEBUG"; then
-        MOZ_STUB_INSTALLER=1
+        MOZ_STUB_INSTALLER=0
       fi
     fi
   fi
@@ -65,6 +65,5 @@ MOZ_DEVTOOLS=all
 
 MOZ_SERVICES_HEALTHREPORT=0
 MOZ_SERVICES_HEALTHREPORTER=0
-MOZ_SERVICES_FXACCOUNTS=0
 MOZ_SERVICES_METRICS=0
 MOZ_DATA_REPORTING=0
