@@ -5,7 +5,7 @@
 
 MOZ_APP_BASENAME=Firefox
 MOZ_APP_VENDOR=Mozilla
-MOZ_UPDATER=1
+MOZ_UPDATER=0
 MOZ_PHOENIX=1
 
 if test "$OS_ARCH" = "WINNT" -o \
@@ -58,7 +58,13 @@ MOZ_RUST_MP4PARSE=1
 MOZ_RUST_URLPARSE=1
 
 # Enable checking that add-ons are signed by the trusted root
-MOZ_ADDON_SIGNING=1
+MOZ_ADDON_SIGNING=0
 
 # Include the DevTools client, not just the server (which is the default)
 MOZ_DEVTOOLS=all
+
+MOZ_SERVICES_HEALTHREPORT=0
+MOZ_SERVICES_HEALTHREPORTER=0
+MOZ_SERVICES_FXACCOUNTS=0
+MOZ_SERVICES_METRICS=0
+MOZ_DATA_REPORTING=0
