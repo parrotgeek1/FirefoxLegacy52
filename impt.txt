@@ -1,4 +1,4 @@
-note: I compiled this using Xcode 7.3.1 on 10.14.6; you need to patch xcode as detailed in the "xcode7mojave" folder
+note: I compiled this using Xcode 7.3.1 on 10.14.6; you need to patch xcode by running ./patch.sh while in the "xcode7mojave" folder
 
 brew unlink binutils
 ./mach bootstrap
