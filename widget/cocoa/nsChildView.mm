@@ -429,7 +429,6 @@ nsChildView::Create(nsIWidget* aParent,
   if (!gChildViewMethodsSwizzled) {
     nsToolkit::SwizzleMethods([NSView class], @selector(mouseDownCanMoveWindow),
                               @selector(nsChildView_NSView_mouseDownCanMoveWindow));
-#ifdef __LP64__
     if (nsCocoaFeatures::OnLionOrLater()) {
       nsToolkit::SwizzleMethods([NSEvent class], @selector(addLocalMonitorForEventsMatchingMask:handler:),
                                 @selector(nsChildView_NSEvent_addLocalMonitorForEventsMatchingMask:handler:),
@@ -437,7 +436,6 @@ nsChildView::Create(nsIWidget* aParent,
       nsToolkit::SwizzleMethods([NSEvent class], @selector(removeMonitor:),
                                 @selector(nsChildView_NSEvent_removeMonitor:), true);
     }
-#endif
     gChildViewMethodsSwizzled = true;
   }
 
@@ -3251,9 +3249,7 @@ NSEvent* gLastDragMouseDownEvent = nil;
 
     [self setFocusRingType:NSFocusRingTypeNone];
 
-#ifdef __LP64__
     mCancelSwipeAnimation = nil;
-#endif
 
     mTopLeftCornerMask = NULL;
   }
@@ -6598,7 +6594,6 @@ static const CGEventField kCGWindowNumberField = (const CGEventField) 51;
 
 @end
 
-#ifdef __LP64__
 // When using blocks, at least on OS X 10.7, the OS sometimes calls
 // +[NSEvent removeMonitor:] more than once on a single event monitor, which
 // causes crashes.  See bug 678607.  We hook these methods to work around
@@ -6641,4 +6636,3 @@ static NSHashTable *sLocalEventObservers = nil;
 }
 
 @end
-#endif // #ifdef __LP64__

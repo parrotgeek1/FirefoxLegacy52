@@ -138,7 +138,6 @@ enum {
 - (NSRect)convertRectToScreen:(NSRect)aRect;
 @end
 
-#ifdef __LP64__
 enum {
   NSEventSwipeTrackingLockDirection = 0x1 << 0,
   NSEventSwipeTrackingClampGestureAmount = 0x1 << 1
@@ -163,7 +162,6 @@ typedef NSInteger NSEventGestureAxis;
                                max:(CGFloat)maxDampenThreshold
                       usingHandler:(void (^)(CGFloat gestureAmount, NSEventPhase phase, BOOL isComplete, BOOL *stop))trackingHandler;
 @end
-#endif // #ifdef __LP64__
 #endif // #if !defined(MAC_OS_X_VERSION_10_7) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_7
 
 @interface ChildView : NSView<
@@ -247,10 +245,8 @@ typedef NSInteger NSEventGestureAxis;
   BOOL mDidForceRefreshOpenGL;
   BOOL mWaitingForPaint;
 
-#ifdef __LP64__
   // Support for fluid swipe tracking.
   BOOL* mCancelSwipeAnimation;
-#endif
 
   // Whether this uses off-main-thread compositing.
   BOOL mUsingOMTCompositor;
